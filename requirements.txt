@@ -1,1 +1,3 @@
 fastapi
+asgi-correlation-id
+google-cloud-logging

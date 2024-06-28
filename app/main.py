@@ -1,19 +1,14 @@
 from fastapi import FastAPI
 
 import logging
-from app.logging_config import setup_logging
-
-setup_logging()
-logger = logging.getLogger(__name__)
+from app import logger
+from starlette.middleware.base import BaseHTTPMiddleware
 
 
-app = FastAPI()
-
+app = FastAPI(on_startup=[logger.setup])
+app.add_middleware(BaseHTTPMiddleware, dispatch=logger.setup_trace_id)
 
 @app.get("/")
 async def root():
-    logger.info("This is an INFO message")
-    logger.warning("This is a WARNING message")
-    logger.error("This is an ERROR message")
-    logger.debug("This is a DEBUG message")
-    return f"OK"
+    logging.info("Heythere!")
+    return "OK"
