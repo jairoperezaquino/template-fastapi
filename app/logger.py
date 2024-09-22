@@ -26,7 +26,8 @@ def setup() -> None:
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.INFO)
 
-    formatter = JsonFormatter()
+    trace_filter = TraceIDFilter()
+    root_logger.addFilter(trace_filter)
 
     if os.environ.get("K_SERVICE"):
         from google.cloud.logging_v2 import Client
@@ -36,9 +37,10 @@ def setup() -> None:
     else:
         handler = logging.StreamHandler()
         
+    formatter = JsonFormatter()
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
-    root_logger.addFilter(TraceIDFilter())
+    root_logger.addFilter(trace_filter)
 
 
 # Middleware to capture trace id from incoming request
